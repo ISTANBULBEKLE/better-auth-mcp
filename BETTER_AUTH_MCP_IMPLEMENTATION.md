@@ -77,5 +77,26 @@ Ensure you have run `make setup` and `make start` first.
 2. **Explore the Protocol**:
    Visit `http://localhost:3000/mcp-explorer` in your browser.
 
+## ❓ Troubleshooting & Protocol Nuances
+
+### Why does the SSE URL show "Method Not Allowed" in the browser?
+If you visit an MCP SSE endpoint (e.g., `https://mcp.chonkie.ai/...`) directly in a standard browser, you will likely see:
+`{"jsonrpc":"2.0","error":{"code":-32000,"message":"Method not allowed."},"id":null}`
+
+This happens for three reasons:
+1.  **Protocol Handshake**: MCP requires an `initialize` request via **POST**. Browsers default to **GET**.
+2.  **Required Headers**: The server expects `Accept: text/event-stream`.
+3.  **JSON-RPC Context**: MCP is a machine-to-machine protocol; it has no HTML interface to show a human visitor.
+
+### Manual Verification (The "Secret Handshake")
+You can verify an MCP server is "alive" using `curl` to mimic a real agent:
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}},"id":1}' \
+  https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp
+```
+
 ---
 *Created for the Better-Auth MCP Showcase Demo.*
