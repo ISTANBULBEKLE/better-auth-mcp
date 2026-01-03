@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+.next/
+dist/
+.cache/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Databases
+*.db
+*.db-journal
+frontend/prisma/dev.db
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs & PIDs
+*.log
+*.pid
+
+# IDEs
+.vscode/
+.idea/
+
+# MCP local config
+mcp.json
