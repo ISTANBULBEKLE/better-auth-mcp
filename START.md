@@ -11,10 +11,15 @@ make setup
 
 ### 2. Start the Application
 ```bash
-make start
+make start-all
 ```
 - **Frontend**: [http://localhost:3000](http://localhost:3000) (Login: test@example.com / password)
 - **Visual Explorer**: [http://localhost:3000/mcp-explorer](http://localhost:3000/mcp-explorer)
+
+### 3. Stop the Application
+```bash
+make stop-all
+```
 
 ---
 
