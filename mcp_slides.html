@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Context Protocol (MCP) Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: #16161a;
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #22d3ee;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        .presentation-container {
+            width: 90vw;
+            height: 80vh;
+            max-width: 1200px;
+            position: relative;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .slides-wrapper {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide {
+            width: 20%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .slide-content {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+            max-width: 800px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 100px;
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .feature-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 2rem;
+            right: 4rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .btn {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transition: width 0.8s ease;
+        }
+
+        .architecture-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .node {
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .node.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .arrow {
+            color: var(--text-dim);
+            font-size: 1.5rem;
+        }
+
+        .code-snippet {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #d1d5db;
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blob"></div>
+    
+    <div class="presentation-container">
+        <div class="slides-wrapper" id="slidesWrapper">
+            <!-- SLIDE 1: INTRO -->
+            <div class="slide">
+                <span class="badge">Introduction</span>
+                <h1>Model Context Protocol</h1>
+                <div class="slide-content">
+                    <p>The open standard for connecting AI models to data sources and tools. No more custom integrations for every data provider.</p>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>Standardized</h3>
+                        <p>One protocol for all AI applications.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Secure</h3>
+                        <p>User-controlled access to local & remote data.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Flexible</h3>
+                        <p>Support for Resources, Tools, and Prompts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: ARCHITECTURE -->
+            <div class="slide">
+                <span class="badge">Architecture</span>
+                <h2>The Three Pillars</h2>
+                <div class="slide-content">
+                    <p>MCP standardizes the communication between three key participants:</p>
+                </div>
+                <div class="architecture-diagram">
+                    <div class="node">
+                        <h3>MCP Host</h3>
+                        <p>The IDE or App (e.g., Cursor, Claude Desktop)</p>
+                    </div>
+                    <div class="arrow">↔</div>
+                    <div class="node active">
+                        <h3>MCP Client</h3>
+                        <p>The connection manager inside the host</p>
+                    </div>
+                    <div class="arrow">↔</div>
+                    <div class="node">
+                        <h3>MCP Server</h3>
+                        <p>The data source (SQLite, GitHub, Google Drive)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: TERMINOLOGY -->
+            <div class="slide">
+                <span class="badge">Terminology</span>
+                <h2>Core Primitives</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>Resources</h3>
+                        <p>Read-only data (Databases, logs, documentation files).</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Tools</h3>
+                        <p>Actionable functions (Run code, send email, search API).</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Prompts</h3>
+                        <p>Reusable templates for standardized AI interaction.</p>
+                    </div>
+                </div>
+                <div class="slide-content" style="margin-top: 2rem;">
+                    <p>Everything follows the <strong>JSON-RPC 2.0</strong> specification.</p>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: TRANSPORT -->
+            <div class="slide">
+                <span class="badge">Transports</span>
+                <h2>Standard Transports</h2>
+                <div class="slide-content">
+                    <p>How the data actually moves between the Client and Server:</p>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>STDIO</h3>
+                        <p>Standard Input/Output. Used for local processes and binary servers.</p>
+                    </div>
+                    <div class="feature-card" style="border-color: var(--accent);">
+                        <h3>SSE</h3>
+                        <p>Server-Sent Events. Used for remote servers over HTTP/HTTPS.</p>
+                    </div>
+                </div>
+                <div class="code-snippet">
+                    // The "Secret Handshake"<br>
+                    { "method": "initialize", "params": { "protocolVersion": "2024-11-05" } }
+                </div>
+            </div>
+
+            <!-- SLIDE 5: DEMO -->
+            <div class="slide">
+                <span class="badge">Finale</span>
+                <h1>Better-Auth Demo</h1>
+                <div class="slide-content">
+                    <p>Let's see MCP in action with our <strong>Song Library</strong> application.</p>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>STDIO Agent</h3>
+                        <p>A Python agent chatting directly with our SQLite DB.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Expert Server</h3>
+                        <p>A specialized server for Better-Auth framework wisdom.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Visual Explorer</h3>
+                        <p>A Next.js 15 SSE debugger to watch the protocol live.</p>
+                    </div>
+                </div>
+                <h3 style="margin-top: 2rem; color: var(--accent);">Time for the Demo →</h3>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="prevBtn" disabled>←</button>
+            <button class="btn" id="nextBtn">→</button>
+        </div>
+
+        <div class="progress-bar" id="progressBar" style="width: 20%;"></div>
+    </div>
+
+    <script>
+        const wrapper = document.getElementById('slidesWrapper');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        function updateSlider() {
+            wrapper.style.transform = `translateX(-${currentSlide * 20}%)`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlider();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlider();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextBtn.click();
+            if (e.key === 'ArrowLeft') prevBtn.click();
+        });
+    </script>
+</body>
+</html>
